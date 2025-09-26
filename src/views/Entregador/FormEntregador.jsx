@@ -1,12 +1,57 @@
 import InputMask from 'comigo-tech-react-input-mask';
-import React from "react";
-import {Button, Container, Divider, Form, Icon, Select} from 'semantic-ui-react';
+import React, { useState } from "react";
+import { Button, Container, Divider, Form, Icon, Select } from 'semantic-ui-react';
+import axios from "axios";
 
-export default function FormEntregador () {
+export default function FormEntregador() {
 
-    const [ativo, setAtivo] = React.useState('');
+    const [nome, setNome] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [rg, setRg] = useState('');
+    const [dataNascimento, setDataNascimento] = useState('');
+    const [foneCelular, setFoneCelular] = useState('');
+    const [foneFixo, setFoneFixo] = useState('');
+    const [qtdEntregasRealizadas, setQtdEntregasRealizadas] = useState('');
+    const [valorPorFrete, setValorPorFrete] = useState('');
+    const [rua, setRua] = useState('');
+    const [numero, setNumero] = useState('');
+    const [bairro, setBairro] = useState('');
+    const [cidade, setCidade] = useState('');
+    const [cep, setCep] = useState('');
+    const [uf, setUf] = useState('');
+    const [complemento, setComplemento] = useState('');
+    const [ativo, setAtivo] = useState('sim');
 
-    
+    function salvar() {
+        let entregadorRequest = {
+            nome: nome,
+            cpf: cpf,
+            rg: rg,
+            dataNascimento: dataNascimento,
+            foneCelular: foneCelular,
+            foneFixo: foneFixo,
+            qtdEntregasRealizadas: parseInt(qtdEntregasRealizadas) || 0,
+            valorPorFrete: parseFloat(valorPorFrete) || 0,
+            endereco: {
+                rua: rua,
+                numero: numero,
+                bairro: bairro,
+                cidade: cidade,
+                cep: cep,
+                uf: uf,
+                complemento: complemento
+            },
+            ativo: ativo === 'sim'
+        }
+
+        axios.post("http://localhost:8080/api/entregador", entregadorRequest)
+            .then((response) => {
+                console.log('Entregador cadastrado com sucesso.')
+            })
+            .catch((error) => {
+                console.log('Erro ao incluir o entregador.')
+            })
+    }
 
     const stateOptions = [
         { key: 'ac', value: 'ac', text: 'Acre' },
@@ -39,29 +84,29 @@ export default function FormEntregador () {
     ];
 
     return (
-
         <div>
-
-            <div style={{marginTop: '3%'}}>
-
-                <Container textAlign='justified' >
-
-                        <h2> <span style={{color: 'darkgray'}}> Entregador &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro </h2>
+            <div style={{ marginTop: '3%' }}>
+                <Container textAlign='justified'>
+                    <h2>
+                        <span style={{ color: 'darkgray' }}>
+                            Entregador &nbsp;<Icon name='angle double right' size="small" />
+                        </span>
+                        Cadastro
+                    </h2>
 
                     <Divider />
 
-                    <div style={{marginTop: '4%'}}>
-
+                    <div style={{ marginTop: '4%' }}>
                         <Form>
-
                             <Form.Group widths='equal'>
-
                                 <Form.Input
                                     required
                                     fluid
                                     label='Nome'
                                     maxLength="100"
                                     width={8}
+                                    value={nome}
+                                    onChange={e => setNome(e.target.value)}
                                 />
 
                                 <Form.Input
@@ -73,8 +118,9 @@ export default function FormEntregador () {
                                     <InputMask
                                         required
                                         mask="999.999.999-99"
-
-                                    /> 
+                                        value={cpf}
+                                        onChange={e => setCpf(e.target.value)}
+                                    />
                                 </Form.Input>
 
                                 <Form.Input
@@ -83,25 +129,26 @@ export default function FormEntregador () {
                                     width={4}
                                 >
                                     <InputMask
-                                        required
-                                        mask="999.999.999-99"
+                                        mask="99.999.999-9"
+                                        value={rg}
+                                        onChange={e => setRg(e.target.value)}
                                     />
                                 </Form.Input>
-
                             </Form.Group>
-                            
-                            <Form.Group>
 
+                            <Form.Group>
                                 <Form.Input
                                     fluid
                                     label='DT Nascimento'
                                     width={4}
-                                    >
+                                >
                                     <InputMask
                                         mask="99/99/9999"
                                         maskChar={null}
                                         placeholder="Ex: 20/03/1985"
-                                    /> 
+                                        value={dataNascimento}
+                                        onChange={e => setDataNascimento(e.target.value)}
+                                    />
                                 </Form.Input>
 
                                 <Form.Input
@@ -109,10 +156,12 @@ export default function FormEntregador () {
                                     required
                                     label='Fone Celular'
                                     width={4}
-                                    >
-                                    <InputMask 
-                                        mask="(99) 9999.9999"
-                                    /> 
+                                >
+                                    <InputMask
+                                        mask="(99) 99999-9999"
+                                        value={foneCelular}
+                                        onChange={e => setFoneCelular(e.target.value)}
+                                    />
                                 </Form.Input>
 
                                 <Form.Input
@@ -121,7 +170,9 @@ export default function FormEntregador () {
                                     width={4}
                                 >
                                     <InputMask
-                                        mask="(99) 9999.9999"
+                                        mask="(99) 9999-9999"
+                                        value={foneFixo}
+                                        onChange={e => setFoneFixo(e.target.value)}
                                     />
                                 </Form.Input>
 
@@ -129,59 +180,70 @@ export default function FormEntregador () {
                                     fluid
                                     label='QTD Entregas Realizadas'
                                     width={4}
-                                >
-                                </Form.Input>
+                                    type="number"
+                                    value={qtdEntregasRealizadas}
+                                    onChange={e => setQtdEntregasRealizadas(e.target.value)}
+                                />
 
                                 <Form.Input
                                     fluid
                                     label='Valor Por Frete'
                                     width={4}
-                                >
-                                </Form.Input>
-
+                                    type="number"
+                                    step="0.01"
+                                    value={valorPorFrete}
+                                    onChange={e => setValorPorFrete(e.target.value)}
+                                />
                             </Form.Group>
 
                             <Form.Group widths='equal'>
-
                                 <Form.Input
                                     fluid
                                     label='Rua'
                                     maxLength="100"
                                     width={12}
+                                    value={rua}
+                                    onChange={e => setRua(e.target.value)}
                                 />
 
                                 <Form.Input
                                     fluid
                                     label='Número'
                                     width={4}
-                                >
-                                </Form.Input>
-
+                                    value={numero}
+                                    onChange={e => setNumero(e.target.value)}
+                                />
                             </Form.Group>
 
                             <Form.Group widths='equal'>
-
                                 <Form.Input
                                     fluid
                                     label='Bairro'
                                     maxLength="100"
                                     width={6}
+                                    value={bairro}
+                                    onChange={e => setBairro(e.target.value)}
                                 />
 
                                 <Form.Input
                                     fluid
                                     label='Cidade'
                                     width={6}
-                                >
-                                </Form.Input>
+                                    value={cidade}
+                                    onChange={e => setCidade(e.target.value)}
+                                />
 
                                 <Form.Input
                                     fluid
                                     label='CEP'
                                     width={4}
                                 >
+                                    <InputMask
+                                        mask="99999-999"
+                                        value={cep}
+                                        onChange={e => setCep(e.target.value)}
+                                    />
                                 </Form.Input>
-
                             </Form.Group>
 
                             <Form.Group widths='equal'>
@@ -190,29 +252,19 @@ export default function FormEntregador () {
                                     placeholder='Selecione um estado'
                                     options={stateOptions}
                                     fluid
+                                    value={uf}
+                                    onChange={(e, { value }) => setUf(value)}
                                 />
                             </Form.Group>
 
                             <Form.Group widths='equal'>
-
                                 <Form.Input
                                     fluid
                                     label='Complemento'
                                     width={16}
-                                >
-                                </Form.Input>
-
-                            </Form.Group>
-
-                            <Form.Group widths='equal'>
-
-                                <Form.Input
-                                    fluid
-                                    label='Complemento'
-                                    width={16}
-                                >
-                                </Form.Input>
-
+                                    value={complemento}
+                                    onChange={e => setComplemento(e.target.value)}
+                                />
                             </Form.Group>
 
                             <Form.Group inline>
@@ -230,11 +282,9 @@ export default function FormEntregador () {
                                     onChange={(e, { value }) => setAtivo(value)}
                                 />
                             </Form.Group>
-                        
                         </Form>
-                        
-                        <div style={{marginTop: '4%'}}>
 
+                        <div style={{ marginTop: '4%' }}>
                             <Button
                                 type="button"
                                 inverted
@@ -246,7 +296,7 @@ export default function FormEntregador () {
                                 <Icon name='reply' />
                                 Voltar
                             </Button>
-                                
+
                             <Button
                                 inverted
                                 circular
@@ -254,19 +304,15 @@ export default function FormEntregador () {
                                 labelPosition='left'
                                 color='blue'
                                 floated='right'
+                                onClick={() => salvar()}
                             >
                                 <Icon name='save' />
                                 Salvar
                             </Button>
-
                         </div>
-
                     </div>
-                    
                 </Container>
             </div>
         </div>
-
     );
-
 }
