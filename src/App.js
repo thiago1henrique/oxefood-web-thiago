@@ -1,23 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
+import Home from "./views/home/Home";
+import {Segment} from "semantic-ui-react";
+import FormCliente from "./views/cliente/FormCliente";
+import FormProduto from "./views/produto/FormProduto";
+import FormEntregador from "./views/Entregador/FormEntregador";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <FormEntregador/>
+
+        <div style={{marginTop: '6%'}}>
+            <Segment vertical color='grey' size='tiny' textAlign='center'>
+                &copy; 2025 - Projeto WEB IV - IFPE Jaboatão dos Guararapes
+            </Segment>
+        </div>
+
     </div>
   );
 }
