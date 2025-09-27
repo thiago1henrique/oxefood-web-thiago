@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import axios from "axios";
 import MenuSistema from "../MenuSistema";
+import {Link} from "react-router-dom";
 
 export default function FormProduto () {
 
@@ -10,8 +11,8 @@ export default function FormProduto () {
     const [codigo, setCodigo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [valorUnitario, setValorUnitario] = useState('');
-    const [tempoMinimoEntrega, setTempoMinimoEntrega] = useState('');
-    const [tempoMaximoEntrega, setTempoMaximoEntrega] = useState('');
+    const [tempoEntregaMinimo, setTempoMinimoEntrega] = useState('');
+    const [tempoEntregaMaximo, setTempoMaximoEntrega] = useState('');
 
     function salvar() {
 
@@ -20,8 +21,8 @@ export default function FormProduto () {
             codigo: codigo,
             descricao: descricao,
             valorUnitario: valorUnitario,
-            tempoMinimoEntrega: tempoMinimoEntrega,
-            tempoMaximoEntrega: setTempoMaximoEntrega,
+            tempoEntregaMinimo: tempoEntregaMinimo,
+            tempoEntregaMaximo: tempoEntregaMaximo
         }
 
         axios.post("http://localhost:8080/api/produto", produtoRequest)
@@ -31,6 +32,14 @@ export default function FormProduto () {
             .catch((error) => {
                 console.log('Erro ao incluir o um produto.')
             })
+
+        setTitulo('');
+        setCodigo('');
+        setDescricao('');
+        setValorUnitario('');
+        setTempoMinimoEntrega('');
+        setTempoMaximoEntrega('');
+        setValorUnitario('');
     }
 
     return (
@@ -101,7 +110,7 @@ export default function FormProduto () {
                                     fluid
                                     placeholder='30'
                                     label='Tempo de Entrega Mínimo em Minutos'
-                                    value={tempoMinimoEntrega}
+                                    value={tempoEntregaMinimo}
                                     onChange={e => setTempoMinimoEntrega(e.target.value)}
                                 >
                                 </Form.Input>
@@ -110,7 +119,7 @@ export default function FormProduto () {
                                     fluid
                                     placeholder='40'
                                     label='Tempo de Entrega Máximo em Minutos'
-                                    value={tempoMaximoEntrega}
+                                    value={tempoEntregaMaximo}
                                     onChange={e => setTempoMaximoEntrega(e.target.value)}
                                 >
                                 </Form.Input>
@@ -121,17 +130,19 @@ export default function FormProduto () {
                         
                         <div style={{marginTop: '4%'}}>
 
-                            <Button
-                                type="button"
-                                inverted
-                                circular
-                                icon
-                                labelPosition='left'
-                                color='orange'
-                            >
-                                <Icon name='reply' />
-                                Voltar
-                            </Button>
+                            <Link to={'/list-produto'}>
+                                <Button
+                                    type="button"
+                                    inverted
+                                    circular
+                                    icon
+                                    labelPosition='left'
+                                    color='orange'
+                                >
+                                    <Icon name='reply' />
+                                    Voltar
+                                </Button>
+                            </Link>
                                 
                             <Button
                                 inverted
