@@ -1,9 +1,9 @@
 import InputMask from 'comigo-tech-react-input-mask';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import axios from "axios";
 import MenuSistema from "../MenuSistema";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 
 export default function FormProduto () {
 
@@ -13,6 +13,25 @@ export default function FormProduto () {
     const [valorUnitario, setValorUnitario] = useState('');
     const [tempoEntregaMinimo, setTempoMinimoEntrega] = useState('');
     const [tempoEntregaMaximo, setTempoMaximoEntrega] = useState('');
+
+    const { state } = useLocation();
+    const [idProduto, setIdProduto] = useState();
+
+    useEffect(() => {
+        if (state != null && state.id != null) {
+            axios.get("http://localhost:8080/api/produto/" + state.id)
+                .then((response) => {
+                    setIdProduto(response.data.id)
+                    setCodigo(response.data.codigo)
+                    setTitulo(response.data.titulo)
+                    setDescricao(response.data.descricao)
+                    setValorUnitario(response.data.valorUnitario)
+                    setTempoMinimoEntrega(response.data.tempoEntregaMinimo)
+                    setTempoMaximoEntrega(response.data.tempoEntregaMaximo)
+                })
+        }
+    }, [state])
+
 
     function salvar() {
 
@@ -25,21 +44,15 @@ export default function FormProduto () {
             tempoEntregaMaximo: tempoEntregaMaximo
         }
 
-        axios.post("http://localhost:8080/api/produto", produtoRequest)
-            .then((response) => {
-                console.log('Produto cadastrado com sucesso.')
-            })
-            .catch((error) => {
-                console.log('Erro ao incluir o um produto.')
-            })
-
-        setTitulo('');
-        setCodigo('');
-        setDescricao('');
-        setValorUnitario('');
-        setTempoMinimoEntrega('');
-        setTempoMaximoEntrega('');
-        setValorUnitario('');
+        if (idProduto != null) { //Alteração:
+            axios.put("http://localhost:8080/api/produto/" + idProduto, produtoRequest)
+                .then((response) => { console.log('Produto alterado com sucesso.') })
+                .catch((error) => { console.log('Erro ao alterar um produto.') })
+        } else { //Cadastro:
+            axios.post("http://localhost:8080/api/produto", produtoRequest)
+                .then((response) => { console.log('Produto cadastrado com sucesso.') })
+                .catch((error) => { console.log('Erro ao incluir o produto.') })
+        }
     }
 
     return (
@@ -52,7 +65,13 @@ export default function FormProduto () {
 
                 <Container textAlign='justified' >
 
-                    <h2> <span style={{color: 'darkgray'}}> Produto &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro </h2>
+                    { idProduto === undefined &&
+                        <h2> <span style={{color: 'darkgray'}}> Produto &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro</h2>
+                    }
+                    { idProduto != undefined &&
+                        <h2> <span style={{color: 'darkgray'}}> Produto &nbsp;<Icon name='angle double right' size="small" /> </span> Alteração</h2>
+                    }
+
 
                     <Divider />
 

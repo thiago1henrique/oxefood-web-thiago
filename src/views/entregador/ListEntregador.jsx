@@ -84,7 +84,7 @@ export default function ListCliente () {
                                                 color='green'
                                                 title='Clique aqui para editar os dados deste produto'
                                                 icon>
-                                                <Icon name='edit' />
+                                                <Link to="/form-entregador" state={{id: entregador.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
                                             </Button> &nbsp;
 
                                             <Button
