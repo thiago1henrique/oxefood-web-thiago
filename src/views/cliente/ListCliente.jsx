@@ -83,7 +83,6 @@ export default function ListCliente () {
                         <br/><br/><br/>
 
                         <Table color='orange' sortable celled>
-
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell>Nome</Table.HeaderCell>
@@ -91,14 +90,12 @@ export default function ListCliente () {
                                     <Table.HeaderCell>Data de Nascimento</Table.HeaderCell>
                                     <Table.HeaderCell>Fone Celular</Table.HeaderCell>
                                     <Table.HeaderCell>Fone Fixo</Table.HeaderCell>
-                                    <Table.HeaderCell textAlign='center'>Ações</Table.HeaderCell>
+                                    <Table.HeaderCell width={2} textAlign='center'>Ações</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
 
                             <Table.Body>
-
                                 { lista.map(cliente => (
-
                                     <Table.Row key={cliente.id}>
                                         <Table.Cell>{cliente.nome}</Table.Cell>
                                         <Table.Cell>{cliente.cpf}</Table.Cell>
@@ -106,14 +103,18 @@ export default function ListCliente () {
                                         <Table.Cell>{cliente.foneCelular}</Table.Cell>
                                         <Table.Cell>{cliente.foneFixo}</Table.Cell>
                                         <Table.Cell textAlign='center'>
-
+                                            {/* ⬇️ REMOVA a Table.Cell extra aqui ⬇️ */}
                                             <Button
                                                 inverted
                                                 circular
                                                 color='green'
                                                 title='Clique aqui para editar os dados deste cliente'
-                                                icon>
-                                                <Link to="/form-cliente" state={{id: cliente.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
+                                                icon
+                                                size='mini'
+                                            >
+                                                <Link to="/form-cliente" state={{id: cliente.id}} style={{color: 'green'}}>
+                                                    <Icon name='edit' />
+                                                </Link>
                                             </Button> &nbsp;
 
                                             <Button
@@ -122,14 +123,15 @@ export default function ListCliente () {
                                                 color='red'
                                                 title='Clique aqui para remover este cliente'
                                                 onClick={e => confirmaRemover(cliente.id)}
-                                                icon>
+                                                icon
+                                                size='mini'
+                                            >
                                                 <Icon name='trash' />
                                             </Button>
-
+                                            {/* ⬆️ FIM dos botões - sem Table.Cell extra ⬆️ */}
                                         </Table.Cell>
                                     </Table.Row>
                                 ))}
-
                             </Table.Body>
                         </Table>
                     </div>

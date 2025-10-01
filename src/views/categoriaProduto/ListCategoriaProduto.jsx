@@ -83,28 +83,29 @@ export default function ListCategoriaProduto () {
                         <br/><br/><br/>
 
                         <Table color='orange' sortable celled>
-
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell>Categoria</Table.HeaderCell>
+                                    <Table.HeaderCell width={2} textAlign='center'>Ações</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
 
                             <Table.Body>
-
-
-                                { lista.map(categoriaProduto => (
-
+                                {lista.map(categoriaProduto => (
                                     <Table.Row key={categoriaProduto.id}>
-                                        <Table.Cell textAlign='center'>
                                         <Table.Cell>{categoriaProduto.descricao}</Table.Cell>
+                                        <Table.Cell textAlign='center'>
                                             <Button
                                                 inverted
                                                 circular
                                                 color='green'
                                                 title='Clique aqui para editar os dados desta categoria'
-                                                icon>
-                                                <Link to="/form-categoriaProduto" state={{id: categoriaProduto.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
+                                                icon
+                                                size='mini'
+                                            >
+                                                <Link to="/form-categoriaProduto" state={{id: categoriaProduto.id}} style={{color: 'green'}}>
+                                                    <Icon name='edit' />
+                                                </Link>
                                             </Button> &nbsp;
 
                                             <Button
@@ -113,10 +114,11 @@ export default function ListCategoriaProduto () {
                                                 color='red'
                                                 title='Clique aqui para remover esta categoria'
                                                 onClick={e => confirmaRemover(categoriaProduto.id)}
-                                                icon>
+                                                icon
+                                                size='mini'
+                                            >
                                                 <Icon name='trash' />
                                             </Button>
-
                                         </Table.Cell>
                                     </Table.Row>
                                 ))}

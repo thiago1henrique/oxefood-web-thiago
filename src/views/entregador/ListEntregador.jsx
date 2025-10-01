@@ -47,6 +47,16 @@ export default function ListCliente () {
         setOpenModal(false)
     }
 
+    function formatarData(dataParam) {
+
+        if (dataParam === null || dataParam === '' || dataParam === undefined) {
+            return ''
+        }
+
+        let arrayData = dataParam.split('-');
+        return arrayData[2] + '/' + arrayData[1] + '/' + arrayData[0];
+    }
+
 
 
     return(
@@ -73,7 +83,6 @@ export default function ListCliente () {
                         <br/><br/><br/>
 
                         <Table color='orange' sortable celled>
-
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell>Nome</Table.HeaderCell>
@@ -83,37 +92,36 @@ export default function ListCliente () {
                                     <Table.HeaderCell>Fone Cel</Table.HeaderCell>
                                     <Table.HeaderCell>Fone Fixo</Table.HeaderCell>
                                     <Table.HeaderCell>Rua</Table.HeaderCell>
-                                    <Table.HeaderCell>Complemento</Table.HeaderCell>
                                     <Table.HeaderCell>Número</Table.HeaderCell>
                                     <Table.HeaderCell>UF</Table.HeaderCell>
-                                    <Table.HeaderCell textAlign='center'>Ações</Table.HeaderCell>
+                                    <Table.HeaderCell width={2} textAlign='center'>Ações</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
 
                             <Table.Body>
-
                                 { lista.map(entregador => (
-
                                     <Table.Row key={entregador.id}>
                                         <Table.Cell>{entregador.nome}</Table.Cell>
                                         <Table.Cell>{entregador.cpf}</Table.Cell>
                                         <Table.Cell>{entregador.rg}</Table.Cell>
-                                        <Table.Cell>{entregador.dataNascimento}</Table.Cell>
+                                        <Table.Cell>{formatarData(entregador.dataNascimento)}</Table.Cell>
                                         <Table.Cell>{entregador.foneCelular}</Table.Cell>
                                         <Table.Cell>{entregador.foneFixo}</Table.Cell>
                                         <Table.Cell>{entregador.enderecoRua}</Table.Cell>
-                                        <Table.Cell>{entregador.enderecoComplemento}</Table.Cell>
                                         <Table.Cell>{entregador.enderecoNumero}</Table.Cell>
                                         <Table.Cell>{entregador.enderecoUf}</Table.Cell>
                                         <Table.Cell textAlign='center'>
-
                                             <Button
                                                 inverted
                                                 circular
                                                 color='green'
-                                                title='Clique aqui para editar os dados deste produto'
-                                                icon>
-                                                <Link to="/form-entregador" state={{id: entregador.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
+                                                title='Clique aqui para editar os dados deste entregador'
+                                                icon
+                                                size='mini'
+                                            >
+                                                <Link to="/form-entregador" state={{id: entregador.id}} style={{color: 'green'}}>
+                                                    <Icon name='edit' />
+                                                </Link>
                                             </Button> &nbsp;
 
                                             <Button
@@ -122,14 +130,14 @@ export default function ListCliente () {
                                                 color='red'
                                                 title='Clique aqui para remover este entregador'
                                                 onClick={e => confirmaRemover(entregador.id)}
-                                                icon>
+                                                icon
+                                                size='mini'
+                                            >
                                                 <Icon name='trash' />
                                             </Button>
-
                                         </Table.Cell>
                                     </Table.Row>
                                 ))}
-
                             </Table.Body>
                         </Table>
                     </div>

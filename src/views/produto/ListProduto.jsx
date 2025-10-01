@@ -103,6 +103,7 @@ export default function ListCliente () {
                                                 circular
                                                 color='green'
                                                 title='Clique aqui para editar os dados deste produto'
+                                                size='mini'
                                                 icon>
                                                 <Link to="/form-produto" state={{id: produto.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
                                             </Button> &nbsp;
@@ -113,6 +114,7 @@ export default function ListCliente () {
                                                 color='red'
                                                 title='Clique aqui para remover este produto'
                                                 onClick={e => confirmaRemover(produto.id)}
+                                                size='mini'
                                                 icon>
                                                 <Icon name='trash' />
                                             </Button>
