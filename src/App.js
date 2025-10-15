@@ -14,7 +14,7 @@ function App() {
 
       <div style={{marginTop: '18%'}}>
         <Segment vertical color='grey' size='tiny' textAlign='center'>
-          &copy; 2024 - Projeto WEB IV - IFPE Jaboatão dos Guararapes
+          &copy; 2025 - Projeto WEB IV - IFPE Jaboatão dos Guararapes
         </Segment>
       </div>
 
