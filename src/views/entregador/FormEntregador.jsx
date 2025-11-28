@@ -3,6 +3,7 @@ import InputMask from 'comigo-tech-react-input-mask';
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import axios from "axios";
 import MenuSistema from "../../MenuSistema";
+import {Link} from "react-router-dom";
 
 const ufOptions = [
     { key: 'ac', value: 'AC', text: 'Acre' },
@@ -301,17 +302,18 @@ export default function FormEntregador() {
 
                         <div style={{ marginTop: '4%' }}>
 
-                            <Button
-                                type="button"
-                                inverted
-                                circular
-                                icon
-                                labelPosition='left'
-                                color='orange'
-                            >
-                                <Icon name='reply' />
-                                Voltar
-                            </Button>
+                            <Link to={'/list-entregador'}>
+                                <Button
+                                    inverted
+                                    circular
+                                    icon
+                                    labelPosition='left'
+                                    color='orange'
+                                >
+                                    <Icon name='reply' /> Voltar
+                                </Button>
+                            </Link>
+
 
                             <Button
                                 inverted

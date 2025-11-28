@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import axios from "axios";
 import MenuSistema from "../../MenuSistema";
+import {Link} from "react-router-dom";
 
 export default function FormCliente () {
 
@@ -120,17 +121,18 @@ export default function FormCliente () {
 
                         <div style={{marginTop: '4%'}}>
 
-                            <Button
-                                type="button"
-                                inverted
-                                circular
-                                icon
-                                labelPosition='left'
-                                color='orange'
-                            >
-                                <Icon name='reply' />
-                                Voltar
-                            </Button>
+                            <Link to={'/list-cliente'}>
+                                <Button
+                                    inverted
+                                    circular
+                                    icon
+                                    labelPosition='left'
+                                    color='orange'
+                                >
+                                    <Icon name='reply' /> Voltar
+                                </Button>
+                            </Link>
+
 
                             <Button
                                 inverted
