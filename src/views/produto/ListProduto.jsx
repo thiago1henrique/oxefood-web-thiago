@@ -71,13 +71,15 @@ export default function ListProduto () {
                                         <Table.Cell textAlign='center'>
 
                                             <Button
+                                                as={Link}
+                                                to="/form-produto"
+                                                state={{ id: produto.id }}
                                                 inverted
                                                 circular
                                                 color='green'
-                                                title='Clique aqui para editar os dados deste cliente'
-                                                icon>
-                                                <Icon name='edit' />
-                                            </Button> &nbsp;
+                                                title='Clique aqui para editar os dados deste produto'
+                                                icon='edit'
+                                            />
 
                                             <Button
                                                 inverted

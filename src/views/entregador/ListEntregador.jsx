@@ -60,7 +60,7 @@ export default function ListEntregador () {
                                     <Table.HeaderCell>Nome</Table.HeaderCell>
                                     <Table.HeaderCell>CPF</Table.HeaderCell>
                                     <Table.HeaderCell>Data de Nascimento</Table.HeaderCell>
-                                    <Table.HeaderCell>Fone Celular</Table.HeaderCell>
+                                    <Table.HeaderCell>QTD de Entregas</Table.HeaderCell>
                                     <Table.HeaderCell>Fone Fixo</Table.HeaderCell>
                                     <Table.HeaderCell textAlign='center'>Ações</Table.HeaderCell>
                                 </Table.Row>
@@ -68,30 +68,32 @@ export default function ListEntregador () {
 
                             <Table.Body>
 
-                                { lista.map(cliente => (
+                                { lista.map(entregador => (
 
-                                    <Table.Row key={cliente.id}>
-                                        <Table.Cell>{cliente.nome}</Table.Cell>
-                                        <Table.Cell>{cliente.cpf}</Table.Cell>
-                                        <Table.Cell>{formatarData(cliente.dataNascimento)}</Table.Cell>
-                                        <Table.Cell>{cliente.foneCelular}</Table.Cell>
-                                        <Table.Cell>{cliente.foneFixo}</Table.Cell>
+                                    <Table.Row key={entregador.id}>
+                                        <Table.Cell>{entregador.nome}</Table.Cell>
+                                        <Table.Cell>{entregador.cpf}</Table.Cell>
+                                        <Table.Cell>{formatarData(entregador.dataNascimento)}</Table.Cell>
+                                        <Table.Cell>{entregador.qtdEntregasRealizadas}</Table.Cell>
+                                        <Table.Cell>{entregador.foneCelular}</Table.Cell>
                                         <Table.Cell textAlign='center'>
 
                                             <Button
+                                                as={Link}
+                                                to="/form-entregador"
+                                                state={{ id: entregador.id }}
                                                 inverted
                                                 circular
                                                 color='green'
-                                                title='Clique aqui para editar os dados deste cliente'
-                                                icon>
-                                                <Icon name='edit' />
-                                            </Button> &nbsp;
+                                                title='Clique aqui para editar os dados deste entregador'
+                                                icon='edit'
+                                            />
 
                                             <Button
                                                 inverted
                                                 circular
                                                 color='red'
-                                                title='Clique aqui para remover este cliente'
+                                                title='Clique aqui para remover este entregador'
                                                 icon>
                                                 <Icon name='trash' />
                                             </Button>
