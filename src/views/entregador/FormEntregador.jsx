@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import InputMask from 'comigo-tech-react-input-mask';
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import axios from "axios";
+import MenuSistema from "../../MenuSistema";
 
 const ufOptions = [
     { key: 'ac', value: 'AC', text: 'Acre' },
@@ -85,6 +86,8 @@ export default function FormEntregador() {
     return (
 
         <div>
+
+            <MenuSistema tela={'entregador'}/>
 
             <div style={{ marginTop: '3%' }}>
 
