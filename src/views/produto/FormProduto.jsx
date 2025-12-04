@@ -14,6 +14,10 @@ export default function FormProduto() {
     const [tempoEntregaMinimo, setTempoEntregaMinimo] = useState();
     const [tempoEntregaMaximo, setTempoEntregaMaximo] = useState();
 
+    const [listaCategoria, setListaCategoria] = useState([]);
+    const [idCategoria, setIdCategoria] = useState();
+
+
     const { state } = useLocation();
     const [idProduto, setIdProduto] = useState();
 
@@ -28,15 +32,23 @@ export default function FormProduto() {
                     setValorUnitario(response.data.valorUnitario)
                     setTempoEntregaMinimo(response.data.tempoEntregaMinimo)
                     setTempoEntregaMaximo(response.data.tempoEntregaMaximo)
+                    setIdCategoria(response.data.categoria.id)
                 })
         }
+        axios.get("http://localhost:8080/api/categorias-produtos")
+            .then((response) => {
+                const dropDownCategorias = response.data.map(c => ({ text: c.descricao, value: c.id }));
+                setListaCategoria(dropDownCategorias);
+            })
+
     }, [state])
 
     function salvar() {
 
         let produtoRequest = {
-            titulo: titulo,
+            idCategoria: idCategoria,
             codigo: codigo,
+            titulo: titulo,
             descricao: descricao,
             valorUnitario: valorUnitario,
             tempoEntregaMinimo: tempoEntregaMinimo,
@@ -50,9 +62,10 @@ export default function FormProduto() {
         } else { //Cadastro:
             axios.post("http://localhost:8080/api/produto", produtoRequest)
                 .then((response) => { console.log('Produto cadastrado com sucesso.') })
-                .catch((error) => { console.log('Erro ao incluir um produto.') })
+                .catch((error) => { console.log('Erro ao incluir o produto.') })
         }
     }
+
 
     return (
 
@@ -96,6 +109,24 @@ export default function FormProduto() {
                                     placeholder={'Informe o código do produto'}
                                     value={codigo}
                                     onChange={e => setCodigo(e.target.value)}
+                                />
+
+                            </Form.Group>
+
+                            <Form.Group>
+
+                                <Form.Select
+                                    required
+                                    fluid
+                                    width={16}
+                                    tabIndex='3'
+                                    placeholder='Selecione'
+                                    label='Categoria'
+                                    options={listaCategoria}
+                                    value={idCategoria}
+                                    onChange={(e,{value}) => {
+                                        setIdCategoria(value)
+                                    }}
                                 />
 
                             </Form.Group>
