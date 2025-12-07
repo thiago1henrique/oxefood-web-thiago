@@ -1,11 +1,14 @@
 import InputMask from 'comigo-tech-react-input-mask';
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import axios from "axios";
 import MenuSistema from "../../MenuSistema";
-import {Link, useLocation} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-export default function FormCliente () {
+// 1. Apenas o import do toast é necessário aqui (o Container já está no App.js)
+import { toast } from 'react-toastify';
+
+export default function FormCliente() {
 
     const [nome, setNome] = useState();
     const [cpf, setCpf] = useState();
@@ -31,13 +34,36 @@ export default function FormCliente () {
     }, [state])
 
     function formatarData(dataParam) {
-
         if (dataParam === null || dataParam === '' || dataParam === undefined) {
             return ''
         }
-
         let arrayData = dataParam.split('-');
         return arrayData[2] + '/' + arrayData[1] + '/' + arrayData[0];
+    }
+
+    // 2. Definição das funções que o seu código pede
+    function notifySuccess(mensagem) {
+        toast.success(mensagem, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+
+    function notifyError(mensagem) {
+        toast.error(mensagem, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     }
 
     function salvar() {
@@ -50,48 +76,63 @@ export default function FormCliente () {
             foneFixo: foneFixo
         }
 
-        if (idCliente != null) { //Alteração:
+        if (idCliente != null) { // Alteração:
             axios.put("http://localhost:8080/api/cliente/" + idCliente, clienteRequest)
-                .then((response) => { console.log('Cliente alterado com sucesso.') })
-                .catch((error) => { console.log('Erro ao alter um cliente.') })
-        } else { //Cadastro:
-            axios.post("http://localhost:8080/api/cliente", clienteRequest)
-                .then((response) => { console.log('Cliente cadastrado com sucesso.') })
-                .catch((error) => { console.log('Erro ao incluir o cliente.') })
-        }
+                .then((response) => {
+                    notifySuccess('Cliente alterado com sucesso.')
+                })
+                .catch((error) => {
+                    // Apliquei a mesma lógica de erro aqui para manter consistência
+                    if (error.response.data.errors != undefined) {
+                        for (let i = 0; i < error.response.data.errors.length; i++) {
+                            notifyError(error.response.data.errors[i].defaultMessage)
+                        }
+                    } else {
+                        notifyError(error.response.data.message)
+                    }
+                })
+        } else { // Cadastro:
 
+            // 3. O SEU CÓDIGO INSERIDO AQUI
+            // (Ajustei apenas o ENDERECO_API para a URL direta para não quebrar)
+            axios.post("http://localhost:8080/api/cliente", clienteRequest)
+                .then((response) => {
+                    notifySuccess('Cliente cadastrado com sucesso.')
+                })
+                .catch((error) => {
+                    if (error.response.data.errors != undefined) {
+                        for (let i = 0; i < error.response.data.errors.length; i++) {
+                            notifyError(error.response.data.errors[i].defaultMessage)
+                        }
+                    } else {
+                        notifyError(error.response.data.message)
+                    }
+                })
+        }
     }
 
-
-
-
-
     return (
-
         <div>
+            {/* Não precisa de ToastContainer aqui, pois já está no App.js */}
 
-            <MenuSistema tela={'cliente'}/>
+            <MenuSistema tela={'cliente'} />
 
-            <div style={{marginTop: '3%'}}>
-
+            <div style={{ marginTop: '3%' }}>
                 <Container textAlign='justified' >
 
-                    { idCliente === undefined &&
-                        <h2> <span style={{color: 'darkgray'}}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro</h2>
+                    {idCliente === undefined &&
+                        <h2> <span style={{ color: 'darkgray' }}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro</h2>
                     }
-                    { idCliente != undefined &&
-                        <h2> <span style={{color: 'darkgray'}}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Alteração</h2>
+                    {idCliente != undefined &&
+                        <h2> <span style={{ color: 'darkgray' }}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Alteração</h2>
                     }
-
 
                     <Divider />
 
-                    <div style={{marginTop: '4%'}}>
+                    <div style={{ marginTop: '4%' }}>
 
                         <Form>
-
                             <Form.Group widths='equal'>
-
                                 <Form.Input
                                     required
                                     fluid
@@ -112,11 +153,9 @@ export default function FormCliente () {
                                         onChange={e => setCpf(e.target.value)}
                                     />
                                 </Form.Input>
-
                             </Form.Group>
 
                             <Form.Group>
-
                                 <Form.Input
                                     fluid
                                     label='Fone Celular'
@@ -152,13 +191,10 @@ export default function FormCliente () {
                                         onChange={e => setDataNascimento(e.target.value)}
                                     />
                                 </Form.Input>
-
                             </Form.Group>
-
                         </Form>
 
-                        <div style={{marginTop: '4%'}}>
-
+                        <div style={{ marginTop: '4%' }}>
                             <Link to={'/list-cliente'}>
                                 <Button
                                     inverted
@@ -170,7 +206,6 @@ export default function FormCliente () {
                                     <Icon name='reply' /> Voltar
                                 </Button>
                             </Link>
-
 
                             <Button
                                 inverted
@@ -184,15 +219,10 @@ export default function FormCliente () {
                                 <Icon name='save' />
                                 Salvar
                             </Button>
-
                         </div>
-
                     </div>
-
                 </Container>
             </div>
         </div>
-
     );
-
 }
