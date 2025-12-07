@@ -26,23 +26,18 @@ export default function FormEnderecoCliente() {
     useEffect(() => {
         if (state != null) {
 
-            // Se veio o ID do Cliente (Seja Novo ou Edição, se passado pela lista)
+            // 1. GARANTE O ID DO CLIENTE (Veio da Lista, seja Novo ou Edição)
             if (state.clienteId) {
                 setIdCliente(state.clienteId);
             }
 
-            // Se veio o ID do Endereço -> MODO EDIÇÃO
+            // 2. SE FOR EDIÇÃO, BUSCA OS DADOS DO ENDEREÇO
             if (state.id) {
                 axios.get("http://localhost:8080/api/cliente/endereco/" + state.id)
                     .then((response) => {
                         setIdEndereco(response.data.id);
 
-                        // Tenta pegar o ID do cliente da resposta, se existir.
-                        // Isso garante o funcionamento do botão voltar mesmo na edição.
-                        if (response.data.cliente && response.data.cliente.id) {
-                            setIdCliente(response.data.cliente.id);
-                        }
-
+                        // Preenche os campos do formulário
                         setRua(response.data.rua);
                         setNumero(response.data.numero);
                         setBairro(response.data.bairro);
@@ -50,6 +45,9 @@ export default function FormEnderecoCliente() {
                         setCidade(response.data.cidade);
                         setEstado(response.data.estado);
                         setComplemento(response.data.complemento);
+
+                        // OBS: Não tentamos mais ler response.data.cliente.id aqui
+                        // pois confiamos no state.clienteId acima.
                     })
                     .catch(error => console.log("Erro ao buscar dados para edição:", error));
             }

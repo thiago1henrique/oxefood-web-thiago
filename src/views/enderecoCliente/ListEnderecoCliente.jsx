@@ -87,9 +87,11 @@ export default function ListEnderecoCliente() {
 
                                             <Button
                                                 as={Link}
-                                                to="/form-endereco-endereco"
-                                                // Para editar, passamos o ID do ENDEREÇO
-                                                state={{ id: endereco.id }}
+                                                to="/form-endereco-cliente" // Certifique-se que a rota está certa
+                                                // --- AQUI ESTÁ A CORREÇÃO ---
+                                                // Passamos id (do endereço) E clienteId (do pai)
+                                                state={{ id: endereco.id, clienteId: clienteId }}
+
                                                 inverted
                                                 circular
                                                 color='green'
