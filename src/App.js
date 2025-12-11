@@ -2,8 +2,11 @@ import {Segment} from 'semantic-ui-react';
 import './App.css';
 import Rotas from "./Rotas";
 import {ToastContainer} from "react-toastify";
+import {setupAxiosInterceptors} from "./views/util/AuthenticationService";
 
 function App() {
+
+    setupAxiosInterceptors();
 
     return (
 
