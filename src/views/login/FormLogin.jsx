@@ -5,7 +5,7 @@ import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui
 import { notifyError } from '../../views/util/Util';
 import { registerSuccessfulLoginForJwt } from '../util/AuthenticationService';
 
-export default function FormLogin () {
+export default function FormLogin() {
 
     const navigate = useNavigate();
 
@@ -16,6 +16,13 @@ export default function FormLogin () {
 
         if (username !== '' && senha !== '') {
 
+            // --- CORREÇÃO: Limpeza do Token Antigo ---
+            // Removemos qualquer token velho salvo para garantir que o Axios
+            // não envie um cabeçalho "Authorization" expirado nesta requisição.
+            localStorage.removeItem("token");
+            sessionStorage.removeItem("token");
+            // -----------------------------------------
+
             let authenticationRequest = {
                 username: username,
                 password: senha,
@@ -24,33 +31,33 @@ export default function FormLogin () {
             axios.post("http://localhost:8080/api/auth", authenticationRequest)
                 .then((response) => {
 
-                    registerSuccessfulLoginForJwt(response.data.token, response.data.tokenExpiresIn
-                    )
-                    navigate("/home");
+                    registerSuccessfulLoginForJwt(
+                        response.data.token,
+                        response.data.tokenExpiresIn
+                    );
 
+                    navigate("/home");
                 })
                 .catch((error) => {
-
-                    notifyError('Usuário não encontrado')
+                    // É bom verificar no console qual foi o erro exato
+                    console.error("Erro no login:", error);
+                    notifyError('Usuário não encontrado ou senha incorreta.');
                 })
         }
     }
 
-    return(
-
+    return (
         <div>
-
             <Grid textAlign='center' style={{ height: '70vh' }} verticalAlign='middle'>
-
                 <Grid.Column style={{ maxWidth: 500 }}>
 
                     <center> <Image src='/logo-IFPE.png' size='medium' /> </center>
 
-                    <div style={{marginTop: '15%'}}>
+                    <div style={{ marginTop: '15%' }}>
                         <Header as='h2' color='grey' textAlign='center'>
                             Informe suas credenciais de acesso
                         </Header>
-                    </div> <br/> <br/>
+                    </div> <br /> <br />
 
                     <Form>
                         <Segment stacked>
@@ -84,13 +91,14 @@ export default function FormLogin () {
                                 color='orange'
                                 icon='sign in alternate'
                                 content='Entrar'
-                                onClick={() => entrar()} />
+                                onClick={() => entrar()}
+                            />
 
                         </Segment>
                     </Form>
 
                     <Message>
-                        Esqueceu a sua senha: <Link>clique aqui</Link>
+                        Esqueceu a sua senha: <Link to="#">clique aqui</Link>
                     </Message>
 
                 </Grid.Column>
@@ -98,4 +106,3 @@ export default function FormLogin () {
         </div>
     )
 }
-

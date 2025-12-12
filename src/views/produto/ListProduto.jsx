@@ -1,27 +1,55 @@
 import axios from 'axios';
-import React, {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
-import {Button, Container, Divider, Header, Icon, Modal, Table} from 'semantic-ui-react';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Button, Container, Divider, Form, Header, Icon, Menu, Modal, Segment, Table } from 'semantic-ui-react';
 import MenuSistema from '../../MenuSistema';
 
-export default function ListProduto () {
+export default function ListProduto() {
 
     const [lista, setLista] = useState([]);
-
     const [openModal, setOpenModal] = useState(false);
     const [idRemover, setIdRemover] = useState();
+    const [menuFiltro, setMenuFiltro] = useState();
+
+    // Estados do Filtro
+    const [codigo, setCodigo] = useState();
+    const [titulo, setTitulo] = useState();
+    const [idCategoria, setIdCategoria] = useState();
+    const [listaCategoriaProduto, setListaCategoriaProduto] = useState([]);
+
+    useEffect(() => {
+        carregarLista();
+    }, [])
+
+    function carregarLista() {
+
+        // Carrega os produtos
+        axios.get("http://localhost:8080/api/produto")
+            .then((response) => {
+                setLista(response.data)
+            })
+
+        // Carrega as categorias para o Dropdown
+        // ATENÇÃO: Verifique se no seu Java o CategoriaProdutoController está com @RequestMapping("/api/categoria-produto")
+        axios.get("http://localhost:8080/api/categoria-produto")
+            .then((response) => {
+                const dropDownCategorias = [];
+                dropDownCategorias.push({ text: '', value: '' });
+                response.data.map(c => (
+                    dropDownCategorias.push({ text: c.descricao, value: c.id })
+                ))
+                setListaCategoriaProduto(dropDownCategorias)
+            })
+            .catch((error) => {
+                console.log("Erro ao carregar categorias. Verifique se o Controller existe no backend.", error);
+            })
+    }
 
     async function remover() {
-
         await axios.delete('http://localhost:8080/api/produto/' + idRemover)
             .then((response) => {
-
                 console.log('Produto removido com sucesso.')
-
-                axios.get("http://localhost:8080/api/produto")
-                    .then((response) => {
-                        setLista(response.data)
-                    })
+                carregarLista(); // Recarrega a lista completa após remover
             })
             .catch((error) => {
                 console.log('Erro ao remover um produto.')
@@ -34,29 +62,69 @@ export default function ListProduto () {
         setIdRemover(id)
     }
 
-    useEffect(() => {
-        carregarLista();
-    }, [])
+    async function filtrarProdutos(codigoParam, tituloParam, idCategoriaParam) {
 
-    function carregarLista() {
+        let formData = new FormData();
 
-        axios.get("http://localhost:8080/api/produto")
+        if (codigoParam !== undefined) {
+            setCodigo(codigoParam)
+            formData.append('codigo', codigoParam);
+        }
+        if (tituloParam !== undefined) {
+            setTitulo(tituloParam)
+            formData.append('titulo', tituloParam);
+        }
+        if (idCategoriaParam !== undefined) {
+            setIdCategoria(idCategoriaParam)
+            formData.append('idCategoria', idCategoriaParam);
+        }
+
+        await axios.post("http://localhost:8080/api/produto/filtrar", formData)
             .then((response) => {
+                // CORREÇÃO: Atualizamos 'lista' para que a tabela mostre os dados filtrados
                 setLista(response.data)
             })
     }
 
-    return(
+    function handleMenuFiltro() {
+        setMenuFiltro(!menuFiltro);
+    }
+
+    function handleChangeCodigo(value) {
+        filtrarProdutos(value, titulo, idCategoria);
+    }
+
+    function handleChangeTitulo(value) {
+        filtrarProdutos(codigo, value, idCategoria);
+    }
+
+    function handleChangeCategoriaProduto(value) {
+        filtrarProdutos(codigo, titulo, value);
+    }
+
+    return (
         <div>
             <MenuSistema tela={'produto'} />
-            <div style={{marginTop: '3%'}}>
+            <div style={{ marginTop: '3%' }}>
 
                 <Container textAlign='justified' >
 
                     <h2> Produto </h2>
                     <Divider />
 
-                    <div style={{marginTop: '4%'}}>
+                    <div style={{ marginTop: '4%' }}>
+
+                        <Menu compact>
+                            <Menu.Item
+                                name='menuFiltro'
+                                active={menuFiltro === true}
+                                onClick={() => handleMenuFiltro()}
+                            >
+                                <Icon name='filter' />
+                                Filtrar
+                            </Menu.Item>
+                        </Menu>
+
                         <Button
                             label='Novo'
                             circular
@@ -67,7 +135,46 @@ export default function ListProduto () {
                             to='/form-produto'
                         />
 
-                        <br/><br/><br/>
+                        {menuFiltro ?
+
+                            <Segment>
+                                <Form className="form-filtros">
+
+                                    <Form.Input
+                                        icon="search"
+                                        value={codigo}
+                                        onChange={e => handleChangeCodigo(e.target.value)}
+                                        label='Código do Produto'
+                                        placeholder='Filtrar por Código'
+                                        labelPosition='left'
+                                        width={4}
+                                    />
+
+                                    <Form.Group widths='equal'>
+                                        <Form.Input
+                                            icon="search"
+                                            value={titulo}
+                                            onChange={e => handleChangeTitulo(e.target.value)}
+                                            label='Título'
+                                            placeholder='Filtrar por título'
+                                            labelPosition='left'
+                                        />
+                                        <Form.Select
+                                            placeholder='Filtrar por Categoria'
+                                            label='Categoria'
+                                            options={listaCategoriaProduto}
+                                            value={idCategoria}
+                                            onChange={(e, { value }) => {
+                                                handleChangeCategoriaProduto(value)
+                                            }}
+                                        />
+
+                                    </Form.Group>
+                                </Form>
+                            </Segment> : ""
+                        }
+
+                        <br /><br /><br />
 
                         <Table color='orange' sortable celled>
 
@@ -86,11 +193,11 @@ export default function ListProduto () {
 
                             <Table.Body>
 
-                                { lista.map(produto => (
+                                {lista.map(produto => (
 
                                     <Table.Row key={produto.id}>
                                         <Table.Cell>{produto.titulo}</Table.Cell>
-                                        <Table.Cell>{produto.categoria.descricao}</Table.Cell>
+                                        <Table.Cell>{produto.categoria ? produto.categoria.descricao : 'Sem Categoria'}</Table.Cell>
                                         <Table.Cell>{produto.codigo}</Table.Cell>
                                         <Table.Cell>{produto.descricao}</Table.Cell>
                                         <Table.Cell>{produto.valorUnitario}</Table.Cell>
@@ -137,7 +244,7 @@ export default function ListProduto () {
             >
                 <Header icon>
                     <Icon name='trash' />
-                    <div style={{marginTop: '5%'}}> Tem certeza que deseja remover esse registro? </div>
+                    <div style={{ marginTop: '5%' }}> Tem certeza que deseja remover esse registro? </div>
                 </Header>
                 <Modal.Actions>
                     <Button basic color='red' inverted onClick={() => setOpenModal(false)}>
@@ -148,10 +255,6 @@ export default function ListProduto () {
                     </Button>
                 </Modal.Actions>
             </Modal>
-
-
         </div>
     )
 }
-
-
